@@ -1,6 +1,8 @@
 include_recipe "apt"
 include_recipe "build-essential"
 
+ruby_version_check = "which ruby && ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l"
+
 node[:ruby][:deps].each do |pkg|
   package pkg do
     action :install
@@ -22,14 +24,14 @@ end
 execute "build ruby-#{ node[:ruby][:version] }" do
   cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }"
   command "./configure && make && make install"
-  not_if { `which ruby && ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l`.to_i != 0 }
+  not_if { ::File.exists? '/usr/local/bin/ruby' and `#{ruby_version_check}`.to_i != 0 }
 end
 
 %w( openssl readline ).each do |ext|
   execute "configure & make ruby-#{ node[:ruby][:version] } #{ext} support" do
     cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }/ext/#{ext}"
     command "ruby extconf.rb && make && make install"
-    not_if { `which ruby && ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l`.to_i != 0 }
+    not_if { ::File.exists? '/usr/local/bin/ruby' and `#{ruby_version_check}`.to_i != 0 }
   end
 end
 
