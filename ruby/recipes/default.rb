@@ -1,7 +1,7 @@
 include_recipe "apt"
 include_recipe "build-essential"
 
-ruby_version_check = "which ruby && ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l"
+ruby_version_check = "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l"
 
 node[:ruby][:deps].each do |pkg|
   package pkg do
