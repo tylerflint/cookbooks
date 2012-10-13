@@ -23,7 +23,7 @@ execute "configure & make #{ node[:ruby][:version] }" do
   cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }"
   # command "./configure && make && make install"
   # command "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
-  command "echo hello"
+  command "echo ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
   not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
 end
 
