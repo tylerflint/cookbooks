@@ -20,8 +20,9 @@ execute "unpack #{ node[:ruby][:version] }" do
 end
 
 execute "configure & make #{ node[:ruby][:version] }" do
-  user "root"
-  command "cd /usr/local/src/ruby-#{ node[:ruby][:version] } && ./configure && make && make install"
+  cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }"
+  # command "./configure && make && make install"
+  command "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
   not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
 end
 
