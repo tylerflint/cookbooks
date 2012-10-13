@@ -16,7 +16,7 @@ end
 execute "unpack #{ node[:ruby][:version] }" do
   cwd '/usr/local/src'
   command "tar xjf ruby-#{ node[:ruby][:version] }.tar.bz2"
-  creates "/usr/local/src/ruby-#{ node[:ruby][:version] }" }
+  creates "/usr/local/src/ruby-#{ node[:ruby][:version] }"
 end
 
 execute "configure & make #{ node[:ruby][:version] }" do
