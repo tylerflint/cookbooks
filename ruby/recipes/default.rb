@@ -21,17 +21,15 @@ end
 
 execute "configure & make #{ node[:ruby][:version] }" do
   cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }"
-  # command "./configure && make && make install"
-  # command "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
-  command "echo ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
-  not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
+  command "./configure && make && make install"
+  not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l`.to_i != 0 }
 end
 
 %w( openssl readline ).each do |ext|
   execute "configure & make #{ node[:ruby][:version] } #{ext} support" do
     cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }/ext/#{ext}"
     command "ruby extconf.rb && make && make install"
-    not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
+    not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | wc -l`.to_i != 0 }
   end
 end
 
