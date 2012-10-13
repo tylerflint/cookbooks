@@ -22,14 +22,15 @@ end
 execute "configure & make #{ node[:ruby][:version] }" do
   cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }"
   # command "./configure && make && make install"
-  command "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
+  # command "ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l"
+  command "echo hello"
   not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
 end
 
 %w( openssl readline ).each do |ext|
   execute "configure & make #{ node[:ruby][:version] } #{ext} support" do
-    user "root"
-    command "cd /usr/local/src/ruby-#{ node[:ruby][:version] }/ext/#{ext}/ && ruby extconf.rb && make && make install"
+    cwd "/usr/local/src/ruby-#{ node[:ruby][:version] }/ext/#{ext}"
+    command "ruby extconf.rb && make && make install"
     not_if { `ruby -v | grep #{ node[:ruby][:version].gsub( '-', '' ) } | grep wc -l`.to_i != 0 }
   end
 end
